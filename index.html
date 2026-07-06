@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AllinPVP 公式サイト | Minecraft PVPサーバー</title>
+<meta name="description" content="AllinPVPはBedFight・TopFight・WallRun・Sumo・BattleRushなど8つのPVPゲームが遊べるMinecraft Java版サーバー！レートを上げてVIPを目指そう！">
+<!-- OGP（SNSでシェアされた時の見た目） -->
+<meta property="og:title" content="AllinPVP - Minecraft PVPサーバー">
+<meta property="og:description" content="⚔ 勝ちたいなら、ここに来い。8つのPVPゲームで最強を決めろ！ Java版 1.21.11 / IP: 65.21.97.42">
+<meta property="og:image" content="assets/ogp.png">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Rubik+Mono+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#120d18;          /* 基本の黒紫 */
+  --bg2:#1b1424;
+  --panel:#221a2e;
+  --panel2:#2b2138;
+  --line:#43325c;
+  --gold:#d9b45a;        /* 金 */
+  --gold2:#f5d98a;
+  --green:#9ade3b;       /* 毒グリーン（ネオン） */
+  --purple:#b06ae0;
+  --red:#ff5c5c;         /* アクセント赤 */
+  --blue:#5cc8ff;        /* アクセント青 */
+  --txt:#f2ecdf;
+  --dim:#b7a9cf;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--txt);
+  font-family:'Noto Sans JP',"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  line-height:1.8;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:var(--green);text-decoration:none}
+section{scroll-margin-top:70px}
+
+/* ===== 背景の浮遊パーティクル ===== */
+.spores{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.spores span{
+  position:absolute;bottom:-10px;border-radius:50%;
+  background:radial-gradient(circle,var(--green),transparent 70%);
+  opacity:.35;animation:rise linear infinite;
+}
+.spores span:nth-child(2n){background:radial-gradient(circle,var(--purple),transparent 70%)}
+.spores span:nth-child(3n){background:radial-gradient(circle,var(--gold),transparent 70%)}
+@keyframes rise{
+  0%{transform:translateY(0) translateX(0);opacity:0}
+  10%{opacity:.35}
+  100%{transform:translateY(-110vh) translateX(40px);opacity:0}
+}
+
+/* ===== ナビ ===== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(18,13,24,.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:4px;
+  padding:8px 12px;overflow-x:auto;white-space:nowrap;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+nav::-webkit-scrollbar{display:none}
+nav .brand{
+  font-family:'Rubik Mono One',monospace;font-size:15px;color:var(--gold);
+  margin-right:8px;flex-shrink:0;letter-spacing:1px;
+}
+nav a.item{
+  color:var(--dim);font-size:13px;font-weight:700;
+  padding:6px 10px;border-radius:6px;flex-shrink:0;
+}
+nav a.item:hover{color:var(--txt);background:var(--panel2)}
+
+/* ===== ヒーロー ===== */
+.hero{
+  position:relative;min-height:100svh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;padding:90px 20px 60px;
+  background:
+    linear-gradient(180deg,rgba(18,13,24,.55) 0%,rgba(18,13,24,.75) 70%,var(--bg) 100%),
+    url('assets/hero_sp.png') center/cover no-repeat,
+    radial-gradient(ellipse at 50% 0%,#2c1f3f 0%,var(--bg) 70%);
+}
+@media(min-width:820px){
+  .hero{background:
+    linear-gradient(180deg,rgba(18,13,24,.55) 0%,rgba(18,13,24,.75) 70%,var(--bg) 100%),
+    url('assets/hero_pc.png') center/cover no-repeat,
+    radial-gradient(ellipse at 50% 0%,#2c1f3f 0%,var(--bg) 70%);}
+}
+.hero .emblem{width:110px;height:110px;object-fit:contain;margin-bottom:14px;
+  filter:drop-shadow(0 0 18px rgba(154,222,59,.45));}
+.hero h1{
+  font-family:'Rubik Mono One',monospace;
+  font-size:clamp(40px,11vw,88px);
+  color:var(--txt);letter-spacing:2px;line-height:1.1;
+  text-shadow:0 0 24px rgba(154,222,59,.35),0 4px 0 #000;
+}
+.hero h1 .a{color:var(--gold)}
+.hero h1 .p{color:var(--green)}
+.hero .catch{
+  font-size:clamp(16px,4.2vw,24px);font-weight:900;margin:14px 0 6px;
+  color:var(--gold2);text-shadow:0 2px 8px #000;
+}
+.hero .sub{color:var(--dim);font-size:14px;margin-bottom:26px}
+.hero .btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-weight:900;font-size:16px;cursor:pointer;
+  padding:14px 26px;border-radius:4px;border:none;font-family:inherit;
+  transition:transform .1s, box-shadow .2s;
+  /* マイクラ風ブロックボタン */
+  box-shadow:inset -4px -5px 0 rgba(0,0,0,.35), inset 4px 4px 0 rgba(255,255,255,.18);
+}
+.btn:active{transform:translateY(2px)}
+.btn.copy{background:var(--green);color:#14210a}
+.btn.copy:hover{box-shadow:inset -4px -5px 0 rgba(0,0,0,.35), inset 4px 4px 0 rgba(255,255,255,.18),0 0 22px rgba(154,222,59,.55)}
+.btn.discord{background:#5865F2;color:#fff}
+.btn.discord:hover{box-shadow:inset -4px -5px 0 rgba(0,0,0,.35), inset 4px 4px 0 rgba(255,255,255,.18),0 0 22px rgba(88,101,242,.6)}
+.hero .ip{
+  margin-top:16px;font-size:13px;color:var(--dim);
+}
+.hero .ip code{
+  background:rgba(0,0,0,.5);border:1px solid var(--line);
+  padding:3px 10px;border-radius:6px;color:var(--gold2);font-size:14px;
+}
+.scrolldown{margin-top:34px;color:var(--dim);font-size:22px;animation:bounce 1.6s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+/* ===== コピー時のトースト ===== */
+#toast{
+  position:fixed;left:50%;bottom:36px;transform:translateX(-50%) translateY(20px);
+  background:var(--green);color:#14210a;font-weight:900;
+  padding:12px 26px;border-radius:8px;z-index:200;opacity:0;pointer-events:none;
+  transition:opacity .25s, transform .25s;box-shadow:0 6px 24px rgba(0,0,0,.5);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== 共通セクション ===== */
+main{position:relative;z-index:1;max-width:1150px;margin:0 auto;padding:0 16px}
+.sec{padding:64px 0 20px}
+.sec h2{
+  font-size:clamp(24px,6vw,36px);font-weight:900;text-align:center;
+  color:var(--gold2);letter-spacing:2px;
+}
+.sec h2 .en{
+  display:block;font-family:'Rubik Mono One',monospace;
+  font-size:12px;color:var(--green);letter-spacing:4px;margin-bottom:4px;
+}
+.sec .lead{text-align:center;color:var(--dim);font-size:14px;margin:10px auto 30px;max-width:640px}
+.divider{height:26px;margin:10px auto;display:flex;justify-content:center;align-items:center;color:var(--gold);opacity:.7;font-size:13px;letter-spacing:6px}
+
+/* ===== ゲームカード ===== */
+.games{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:820px){.games{grid-template-columns:repeat(4,1fr)}}
+.gcard{
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  overflow:hidden;position:relative;
+  transition:transform .15s, box-shadow .2s, border-color .2s;
+}
+.gcard:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.gcard .thumb{
+  aspect-ratio:9/16;width:100%;object-fit:cover;object-position:top;
+  background:linear-gradient(160deg,#2c1f3f,#1a2410);
+}
+.gcard .body{padding:12px 12px 14px}
+.gcard h3{font-size:16px;font-weight:900;color:var(--gold2);display:flex;align-items:center;gap:6px}
+.gcard .mode{font-size:11px;color:var(--green);font-weight:700;margin-bottom:6px}
+.gcard p{font-size:12.5px;color:var(--dim);line-height:1.7}
+.gcard .cmd{
+  display:inline-block;margin-top:8px;font-size:12px;font-weight:700;
+  background:#000;border:1px solid var(--line);color:var(--green);
+  padding:2px 10px;border-radius:6px;
+}
+.gcard .tag{
+  position:absolute;top:10px;left:10px;z-index:2;
+  background:rgba(0,0,0,.72);border:1px solid var(--gold);color:var(--gold2);
+  font-size:11px;font-weight:900;padding:2px 10px;border-radius:20px;
+}
+
+/* ===== レート ===== */
+.ratewrap{
+  background:
+    linear-gradient(rgba(18,13,24,.88),rgba(18,13,24,.88)),
+    url('assets/rate_bg.png') center/cover no-repeat,var(--panel);
+  border:1px solid var(--line);border-radius:14px;padding:22px 18px;
+}
+.rategrid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:820px){.rategrid{grid-template-columns:1.1fr .9fr}}
+.ratebox{background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:10px;padding:16px}
+.ratebox h3{color:var(--green);font-size:16px;margin-bottom:10px}
+.ratebox ul{list-style:none}
+.ratebox li{font-size:14px;color:var(--txt);padding:6px 0;border-bottom:1px dashed #3a2d50}
+.ratebox li:last-child{border-bottom:none}
+.ratebox li b{color:var(--gold2)}
+table.mult{width:100%;border-collapse:collapse;margin-top:6px}
+table.mult th{font-size:12px;color:var(--dim);text-align:left;padding:6px;border-bottom:1px solid var(--line)}
+table.mult td{font-size:14px;padding:7px 6px;border-bottom:1px dashed #3a2d50}
+table.mult td.x{font-weight:900;color:var(--green);text-align:right}
+.formula{
+  text-align:center;background:#000;border:1px solid var(--gold);border-radius:10px;
+  padding:12px;margin:14px 0;font-weight:900;font-size:clamp(13px,3.6vw,17px);color:var(--gold2);
+}
+.calc{margin-top:4px}
+.calc .row{
+  display:flex;align-items:center;gap:8px;margin:8px 0;
+  font-size:13px;flex-wrap:wrap;
+}
+.calc .chip{
+  background:var(--panel2);border:1px solid var(--line);border-radius:8px;
+  padding:4px 10px;font-weight:700;
+}
+.calc .chip .g{color:var(--green)}
+.calc .arrow{color:var(--dim)}
+.calc .plus{color:var(--gold);font-weight:900}
+.calc .total{
+  background:linear-gradient(90deg,#3a2d0e,#4a3300);border:1px solid var(--gold);
+  color:var(--gold2);font-weight:900;font-size:16px;border-radius:8px;padding:8px 16px;
+}
+.vip{
+  display:flex;gap:14px;align-items:center;margin-top:16px;
+  background:linear-gradient(90deg,rgba(255,92,92,.12),rgba(217,180,90,.12));
+  border:1px solid var(--red);border-radius:10px;padding:12px 14px;
+}
+.vip img{width:64px;height:64px;object-fit:contain;flex-shrink:0}
+.vip .t{font-size:13.5px}
+.vip .t b{color:var(--red);font-size:16px}
+
+/* ===== エフェクト ===== */
+.fx{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:820px){.fx{grid-template-columns:repeat(5,1fr)}}
+.fxcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;text-align:center;transition:transform .15s,border-color .2s}
+.fxcard:hover{transform:translateY(-4px);border-color:var(--green)}
+.fxcard img{aspect-ratio:1/1;object-fit:cover;width:100%;background:#000}
+.fxcard .nm{font-weight:900;font-size:13.5px;padding:8px 6px 2px;color:var(--gold2)}
+.fxcard .ds{font-size:11.5px;color:var(--dim);padding:0 8px 12px}
+
+/* ===== コマンド表 ===== */
+table.cmds{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+table.cmds th{background:var(--panel2);color:var(--gold2);font-size:13px;text-align:left;padding:10px 12px}
+table.cmds td{padding:10px 12px;font-size:13.5px;border-top:1px solid #3a2d50}
+table.cmds td:first-child{white-space:nowrap}
+table.cmds code{
+  background:#000;color:var(--green);border:1px solid var(--line);
+  padding:2px 8px;border-radius:6px;font-weight:700;font-size:13px;
+}
+.compassnote{
+  margin-top:14px;display:flex;gap:12px;align-items:center;
+  background:var(--panel);border:1px solid var(--gold);border-radius:10px;padding:12px 14px;font-size:13.5px;
+}
+.compassnote img{width:52px;height:52px;object-fit:contain;flex-shrink:0}
+
+/* ===== 参加方法 ===== */
+.steps{display:grid;grid-template-columns:1fr;gap:12px;counter-reset:st}
+@media(min-width:820px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:20px 16px;text-align:center;position:relative;
+}
+.step .num{
+  font-family:'Rubik Mono One',monospace;font-size:13px;color:#14210a;
+  background:var(--green);width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;margin:0 auto 10px;
+  box-shadow:0 0 14px rgba(154,222,59,.5);
+}
+.step .ico{font-size:34px;margin-bottom:6px}
+.step h3{font-size:15px;color:var(--gold2);margin-bottom:6px}
+.step p{font-size:13px;color:var(--dim)}
+.step p code{background:#000;color:var(--gold2);padding:1px 8px;border-radius:6px;border:1px solid var(--line);cursor:pointer}
+
+/* ===== ルール ===== */
+.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:820px){.rules{grid-template-columns:repeat(4,1fr)}}
+.rule{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 14px;text-align:center}
+.rule .ico{font-size:30px}
+.rule h3{font-size:14.5px;color:var(--gold2);margin:6px 0 4px}
+.rule p{font-size:12px;color:var(--dim)}
+
+/* ===== ニュース ===== */
+.newshead{border-radius:12px;overflow:hidden;border:1px solid var(--line);margin-bottom:14px}
+.newshead img{width:100%;max-height:160px;object-fit:cover}
+.news{list-style:none}
+.news li{
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:14px 16px;margin-bottom:10px;
+  display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;
+}
+.news .date{font-size:12px;color:var(--green);font-weight:700;white-space:nowrap}
+.news .badge{
+  font-size:11px;font-weight:900;padding:1px 8px;border-radius:12px;white-space:nowrap;
+  background:var(--red);color:#fff;
+}
+.news .badge.info{background:var(--blue);color:#04222f}
+.news .tx{font-size:14px;flex:1;min-width:200px}
+
+/* ===== フッター ===== */
+footer{
+  margin-top:70px;border-top:1px solid var(--line);
+  text-align:center;padding:40px 16px 60px;color:var(--dim);font-size:13px;
+  background:linear-gradient(180deg,var(--bg),#0c0812);
+  position:relative;z-index:1;
+}
+footer .big{
+  font-family:'Rubik Mono One',monospace;color:var(--gold);font-size:22px;margin-bottom:8px;
+}
+footer .fbtns{display:flex;gap:10px;justify-content:center;margin:14px 0;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<!-- 背景の浮遊する光（飾り） -->
+<div class="spores" id="spores"></div>
+
+<nav>
+  <span class="brand">AllinPVP</span>
+  <a class="item" href="#games">⚔ ゲーム</a>
+  <a class="item" href="#rate">📈 レート</a>
+  <a class="item" href="#fx">✨ 勝利エフェクト</a>
+  <a class="item" href="#cmds">⌨ コマンド</a>
+  <a class="item" href="#join">🚀 参加方法</a>
+  <a class="item" href="#rules">📜 ルール</a>
+  <a class="item" href="#news">📰 ニュース</a>
+</nav>
+
+<!-- ================= ヒーロー ================= -->
+<header class="hero">
+  <img class="emblem" src="assets/logo_emblem.png" alt="AllinPVP エンブレム" onerror="this.style.display='none'">
+  <h1><span class="a">Allin</span><span class="p">PVP</span></h1>
+  <div class="catch">⚔ 勝ちたいなら、ここに来い。</div>
+  <div class="sub">8つのPVPゲームで、キミの最強を証明しよう！<br>Java版 1.21.11 対応 / 小中高生歓迎の日本人サーバー</div>
+  <div class="btns">
+    <button class="btn copy" onclick="copyIP()">🎮 アドレスをコピーして参加！</button>
+    <a class="btn discord" href="https://discord.com/invite/2v7JbraYBY" target="_blank" rel="noopener">💬 Discordに入る</a>
+  </div>
+  <div class="ip">接続アドレス: <code id="ipText">65.21.97.42</code>（クリックでもコピーできるよ）</div>
+  <div class="scrolldown">▼</div>
+</header>
+
+<div id="toast">コピーしました！✨</div>
+
+<main>
+<!-- ================= ゲーム紹介 ================= -->
+<section class="sec" id="games">
+  <h2><span class="en">GAMES</span>⚔ 遊べるゲーム</h2>
+  <p class="lead">全部で8種類！ロビーのコンパス🧭かコマンドで、好きなゲームにすぐ入れるよ。</p>
+  <div class="games">
+
+    <div class="gcard">
+      <span class="tag">人気No.1</span>
+      <img class="thumb" src="assets/game_bedfight.png" alt="BedFight" loading="lazy" onerror="this.style.display='none'">
+      <div class="body">
+        <h3>🛏 BedFight</h3>
+        <div class="mode">1v1〜4v4 / キュー制</div>
+        <p>相手のベッドを壊してから全滅させろ！ベッドがある限り何度でも復活できる。人数が揃うとランダムチームで自動スタート！</p>
+        <span class="cmd">/bf</span>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <img class="thumb" src="assets/game_topfight.png" alt="TopFight" loading="lazy" onerror="this.style.display='none'">
+      <div class="body">
+        <h3>⚔ TopFight</h3>
+        <div class="mode">1v1〜4v4</div>
+        <p>装備固定（防御3・木剣）のシンプル決闘。死んだら即脱落、最後まで残ったチームの勝ち。純粋な腕の勝負！</p>
+        <span class="cmd">/tf</span>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <img class="thumb" src="assets/game_wallrun.png" alt="WallRun" loading="lazy" onerror="this.style.display='none'">
+      <div class="body">
+        <h3>🧱 WallRun</h3>
+        <div class="mode">チーム戦 / カスタム可</div>
+        <p>ブロックを建てて壁を越えて攻めるベッド戦。高低差を使った立体バトルが熱い！観戦・チーム指定つきのカスタムゲームもOK。</p>
+        <span class="cmd">/wr</span>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <img class="thumb" src="assets/game_sumo.png" alt="Sumo" loading="lazy" onerror="this.style.display='none'">
+      <div class="body">
+        <h3>💧 Sumo</h3>
+        <div class="mode">1v1</div>
+        <p>素手の押し出し勝負！水に触れたら即負け。シンプルだけど奥深い、反射神経と心理戦のぶつかり合い。</p>
+        <span class="cmd">/sumo</span>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <span class="tag">スピード系</span>
+      <img class="thumb" src="assets/game_battlerush.png" alt="BattleRush" loading="lazy" onerror="this.style.display='none'">
+      <div class="body">
+        <h3>⚑ BattleRush</h3>
+        <div class="mode">3点先取</div>
+        <p>敵陣の突入エリアに飛び込んで+1点、3点先取で勝利！死んでも1.5秒で復活するから、テンポの良い高速攻防が続く。</p>
+        <span class="cmd">/br</span>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <span class="tag">ガチ勢向け</span>
+      <img class="thumb" src="assets/game_noheal.png" alt="NoHeal" loading="lazy" onerror="this.style.display='none'">
+      <div class="body">
+        <h3>💔 NoHeal</h3>
+        <div class="mode">1v1限定</div>
+        <p>回復なし！体力管理がすべてのサバイバル決闘。一撃一撃が重い、ヒリヒリの緊張感を味わえ。</p>
+        <span class="cmd">/nh</span>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <img class="thumb" src="assets/game_spears.png" alt="Spears" loading="lazy" onerror="this.style.display='none'">
+      <div class="body">
+        <h3>🔱 Spears</h3>
+        <div class="mode">1v1 or 2v2</div>
+        <p>突進付きの槍を連打して戦う白兵戦！槍のレンジ（間合い）管理が勝敗を分ける。接近戦好きはハマる。</p>
+        <span class="cmd">/sp</span>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <img class="thumb" src="assets/game_olduhc.png" alt="OldUHC" loading="lazy" onerror="this.style.display='none'">
+      <div class="body">
+        <h3>🗡 OldUHC</h3>
+        <div class="mode">1v1限定</div>
+        <p>UHCの連打版！回復なしのガチな体力削り合い。古き良きUHCの緊張感をシンプルに楽しめる。</p>
+        <span class="cmd">/ou</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider">◆ ◆ ◆</div>
+
+<!-- ================= レートシステム ================= -->
+<section class="sec" id="rate">
+  <h2><span class="en">RATING</span>📈 レートシステム</h2>
+  <p class="lead">ゲームごとにレートがあって、それを合体させた「総合PVPレート」でランキングが決まるよ！</p>
+  <div class="ratewrap">
+    <div class="rategrid">
+      <div class="ratebox">
+        <h3>🎯 基本ルール</h3>
+        <ul>
+          <li>各ゲームに個別の<b>Eloレート</b>がある（勝つと上がって負けると下がる仕組み）</li>
+          <li>初期レートは <b>600</b> からスタート</li>
+          <li>変動の大きさは <b>K=40</b>（1試合で最大±40くらい動く）</li>
+          <li>どれだけ負けても <b>100</b> より下がらないから安心！</li>
+          <li>自分のレートは <code style="background:#000;padding:1px 8px;border-radius:6px;border:1px solid var(--line);color:var(--green)">/pvp</code>、ランキングは <code style="background:#000;padding:1px 8px;border-radius:6px;border:1px solid var(--line);color:var(--green)">/pvptop</code> で確認</li>
+        </ul>
+      </div>
+      <div class="ratebox">
+        <h3>⚖ ゲームごとの倍率</h3>
+        <table class="mult">
+          <tr><th>ゲーム</th><th style="text-align:right">倍率</th></tr>
+          <tr><td>🛏 BedFight</td><td class="x">×1.3</td></tr>
+          <tr><td>🧱 WallRun</td><td class="x">×1.0</td></tr>
+          <tr><td>⚔ TopFight</td><td class="x">×0.9</td></tr>
+          <tr><td>💧 Sumo</td><td class="x">×0.3</td></tr>
+        </table>
+        <p style="font-size:12px;color:var(--dim);margin-top:8px">※ そのほかのゲームは今のところ総合レートの対象外だよ（今後追加されるかも！）</p>
+        <!-- ▼▼ 倍率を追加する時はここに <tr><td>ゲーム名</td><td class="x">×1.0</td></tr> を足してね ▼▼ -->
+      </div>
+    </div>
+
+    <div class="formula">総合PVPレート ＝ 600 ＋ (各ゲームのレート − 600) × 倍率 の合計</div>
+
+    <div class="ratebox calc">
+      <h3>🧮 計算してみよう（例：プレイヤー「Kazu」の場合）</h3>
+      <div class="row"><span class="chip">🛏 BedFight <b>800</b></span><span class="arrow">→</span><span class="chip">(800−600)×1.3 ＝ <b class="g">+260</b></span></div>
+      <div class="row"><span class="chip">🧱 WallRun <b>700</b></span><span class="arrow">→</span><span class="chip">(700−600)×1.0 ＝ <b class="g">+100</b></span></div>
+      <div class="row"><span class="chip">⚔ TopFight <b>650</b></span><span class="arrow">→</span><span class="chip">(650−600)×0.9 ＝ <b class="g">+45</b></span></div>
+      <div class="row"><span class="chip">💧 Sumo <b>900</b></span><span class="arrow">→</span><span class="chip">(900−600)×0.3 ＝ <b class="g">+90</b></span></div>
+      <div class="row"><span class="plus">➡ 600 + 260 + 100 + 45 + 90 ＝</span><span class="total">総合レート 1095 🎉</span></div>
+      <p style="font-size:12.5px;color:var(--dim);margin-top:6px">あと205上げればVIP！得意なゲームを伸ばすのも、苦手を潰すのも自由だ💪</p>
+    </div>
+
+    <div class="vip">
+      <img src="assets/vip_badge.png" alt="VIPバッジ" onerror="this.style.display='none'">
+      <div class="t"><b>👑 総合レート1300を超えるとVIPランク！</b><br>
+      名前の横にVIPの称号がついて、みんなに一目置かれる存在に。目指せPVP王！</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">◆ ◆ ◆</div>
+
+<!-- ================= 勝利エフェクト ================= -->
+<section class="sec" id="fx">
+  <h2><span class="en">VICTORY FX</span>✨ 勝利エフェクト</h2>
+  <p class="lead">試合に勝つと発動するカッコいい演出！<code style="background:#000;padding:1px 8px;border-radius:6px;border:1px solid var(--line);color:var(--green)">/bfeffect</code> で5種類から好きなものを選べるよ。</p>
+  <div class="fx">
+    <div class="fxcard">
+      <img src="assets/fx_flame_tornado.png" alt="炎の竜巻" loading="lazy" onerror="this.style.display='none'">
+      <div class="nm">🔥 炎の竜巻</div>
+      <div class="ds">燃え上がる火柱が勝者を包む！</div>
+    </div>
+    <div class="fxcard">
+      <img src="assets/fx_thunder.png" alt="サンダーストーム" loading="lazy" onerror="this.style.display='none'">
+      <div class="nm">⚡ サンダーストーム</div>
+      <div class="ds">雷鳴とともに勝利を宣言！</div>
+    </div>
+    <div class="fxcard">
+      <img src="assets/fx_finale.png" alt="グランドフィナーレ" loading="lazy" onerror="this.style.display='none'">
+      <div class="nm">🎆 グランドフィナーレ</div>
+      <div class="ds">空一面の大花火でお祝い！</div>
+    </div>
+    <div class="fxcard">
+      <img src="assets/fx_heart_rain.png" alt="ハートレイン" loading="lazy" onerror="this.style.display='none'">
+      <div class="nm">💗 ハートレイン</div>
+      <div class="ds">降り注ぐハートで優しく勝利。</div>
+    </div>
+    <div class="fxcard">
+      <img src="assets/fx_ender_vortex.png" alt="エンダーボルテックス" loading="lazy" onerror="this.style.display='none'">
+      <div class="nm">🌌 エンダーボルテックス</div>
+      <div class="ds">異界の渦が敗者を飲み込む…</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">◆ ◆ ◆</div>
+
+<!-- ================= コマンド一覧 ================= -->
+<section class="sec" id="cmds">
+  <h2><span class="en">COMMANDS</span>⌨ コマンド一覧</h2>
+  <p class="lead">覚えるのはこれだけ！わからなくなったらロビーのコンパス🧭を右クリックすればOK。</p>
+  <table class="cmds">
+    <tr><th>コマンド</th><th>なにができる？</th></tr>
+    <tr><td><code>/bf</code></td><td>🛏 BedFight のメニューを開く</td></tr>
+    <tr><td><code>/tf</code></td><td>⚔ TopFight のメニューを開く</td></tr>
+    <tr><td><code>/wr</code></td><td>🧱 WallRun のメニューを開く</td></tr>
+    <tr><td><code>/sumo</code></td><td>💧 Sumo のメニューを開く</td></tr>
+    <tr><td><code>/br</code></td><td>⚑ BattleRush のメニューを開く</td></tr>
+    <tr><td><code>/nh</code></td><td>💔 NoHeal のメニューを開く</td></tr>
+    <tr><td><code>/sp</code></td><td>🔱 Spears のメニューを開く</td></tr>
+    <tr><td><code>/ou</code></td><td>🗡 OldUHC のメニューを開く</td></tr>
+    <tr><td><code>/bfleave</code> など</td><td>🚪 今いるゲームから離脱する（各ゲームに leave コマンドがあるよ）</td></tr>
+    <tr><td><code>/pvp</code></td><td>📊 自分のレートの内訳を見る</td></tr>
+    <tr><td><code>/pvptop</code></td><td>🏆 総合レートTOP10を見る</td></tr>
+    <tr><td><code>/bfeffect</code></td><td>✨ 勝利エフェクトを変更する</td></tr>
+  </table>
+  <div class="compassnote">
+    <img src="assets/compass.png" alt="コンパス" onerror="this.style.display='none'">
+    <div>🧭 <b>コマンドを覚えなくても大丈夫！</b><br>ロビーで持っているコンパスを右クリックすると、全ゲームのメニューが開くよ。</div>
+  </div>
+</section>
+
+<div class="divider">◆ ◆ ◆</div>
+
+<!-- ================= 参加方法 ================= -->
+<section class="sec" id="join">
+  <h2><span class="en">HOW TO JOIN</span>🚀 参加方法はカンタン3ステップ</h2>
+  <p class="lead">初めてでも1分で遊び始められるよ！</p>
+  <div class="steps">
+    <div class="step">
+      <div class="num">1</div>
+      <div class="ico">🎮</div>
+      <h3>サーバーに接続</h3>
+      <p>Java版 <b>1.21.11</b> で<br><code onclick="copyIP()" title="クリックでコピー">65.21.97.42</code><br>に接続！（↑クリックでコピー）</p>
+    </div>
+    <div class="step">
+      <div class="num">2</div>
+      <div class="ico">🧭</div>
+      <h3>コンパスを右クリック</h3>
+      <p>ロビーで持っているコンパスを右クリックすると、ゲーム一覧メニューが開くよ。</p>
+    </div>
+    <div class="step">
+      <div class="num">3</div>
+      <div class="ico">⚔</div>
+      <h3>Queueに入るだけ！</h3>
+      <p>好きなゲームを選んでQueue（待機列）に入れば、人数が揃った瞬間に試合開始！</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider">◆ ◆ ◆</div>
+
+<!-- ================= ルール ================= -->
+<section class="sec" id="rules">
+  <h2><span class="en">RULES</span>📜 サーバーのルール</h2>
+  <p class="lead">みんなが気持ちよく遊ぶための4つの約束。守れないとBANされちゃうよ！</p>
+  <div class="rules">
+    <div class="rule"><div class="ico">🚫</div><h3>チート禁止</h3><p>チートMod・ハック系クライアントは即BAN。実力で勝とう！</p></div>
+    <div class="rule"><div class="ico">🤬</div><h3>暴言禁止</h3><p>相手をバカにする発言・煽りすぎはNG。GG（グッドゲーム）の心を大切に。</p></div>
+    <div class="rule"><div class="ico">🏃</div><h3>試合放棄の連発禁止</h3><p>負けそうだから抜ける…を繰り返すのはダメ。最後まで戦おう！</p></div>
+    <div class="rule"><div class="ico">😄</div><h3>楽しく遊ぶ！</h3><p>いちばん大事なルール。勝っても負けても楽しむのが最強のプレイヤー！</p></div>
+  </div>
+  <!-- ▼▼ ルールを追加する時はここに <div class="rule">...</div> を足してね ▼▼ -->
+</section>
+
+<div class="divider">◆ ◆ ◆</div>
+
+<!-- ================= ニュース ================= -->
+<section class="sec" id="news">
+  <h2><span class="en">NEWS</span>📰 お知らせ</h2>
+  <p class="lead">アップデート情報やイベント告知はここでチェック！</p>
+  <div class="newshead">
+    <img src="assets/news_banner.png" alt="お知らせ" loading="lazy" onerror="this.parentElement.style.display='none'">
+  </div>
+  <ul class="news">
+    <!-- ============================================================
+      ▼▼▼ お知らせの追加はここから ▼▼▼
+      下の <li> をコピーして一番上に貼り付けて、日付と内容を書き換えるだけ！
+      バッジの種類:
+        <span class="badge">重要</span>       … 赤（大型アプデ・メンテなど）
+        <span class="badge info">お知らせ</span> … 青（イベント・小ネタなど）
+    ============================================================= -->
+    <li>
+      <span class="date">2026-07-06</span>
+      <span class="badge">重要</span>
+      <span class="tx">🎉 <b>公式サイトオープン！</b> AllinPVPの情報はすべてここに集まるよ。ブックマークしてね！</span>
+    </li>
+    <li>
+      <span class="date">2026-07-01</span>
+      <span class="badge info">お知らせ</span>
+      <span class="tx">💔🔱🗡 新ゲーム <b>NoHeal / Spears / OldUHC</b> が登場！コマンドは /nh /sp /ou だよ。</span>
+    </li>
+    <!-- ▲▲▲ お知らせの追加はここまで ▲▲▲ -->
+  </ul>
+</section>
+</main>
+
+<!-- ================= フッター ================= -->
+<footer>
+  <div class="big">AllinPVP</div>
+  <div>Java版 1.21.11 / IP: <b style="color:var(--gold2)">65.21.97.42</b></div>
+  <div class="fbtns">
+    <button class="btn copy" onclick="copyIP()">🎮 アドレスをコピー</button>
+    <a class="btn discord" href="https://discord.com/invite/2v7JbraYBY" target="_blank" rel="noopener">💬 Discord</a>
+  </div>
+  <div style="margin-top:14px;font-size:12px">AllinPVP は [サーバー全体の名前] のPVP部門です。<br>
+  <!-- ▲ ここの [サーバー全体の名前] を実際の名前に書き換えてね -->
+  当サイトは Mojang / Microsoft とは関係ありません。</div>
+</footer>
+
+<script>
+/* ===== IPコピー（クリップボードAPI＋古い端末用フォールバック） ===== */
+const SERVER_IP = '65.21.97.42';
+function copyIP(){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(SERVER_IP).then(showToast).catch(()=>fallbackCopy());
+  }else{
+    fallbackCopy();
+  }
+}
+function fallbackCopy(){
+  const ta = document.createElement('textarea');
+  ta.value = SERVER_IP;
+  ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); showToast(); }catch(e){ alert('コピーできませんでした。IP: '+SERVER_IP); }
+  ta.remove();
+}
+let toastTimer=null;
+function showToast(){
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2000);
+}
+document.getElementById('ipText').addEventListener('click', copyIP);
+
+/* ===== 背景の浮遊パーティクル生成 ===== */
+(function(){
+  const wrap = document.getElementById('spores');
+  const n = window.innerWidth < 820 ? 18 : 34;
+  for(let i=0;i<n;i++){
+    const s = document.createElement('span');
+    const size = 2 + Math.random()*5;
+    s.style.width = s.style.height = size+'px';
+    s.style.left = Math.random()*100+'vw';
+    s.style.animationDuration = (9+Math.random()*14)+'s';
+    s.style.animationDelay = (-Math.random()*20)+'s';
+    wrap.appendChild(s);
+  }
+})();
+</script>
+</body>
+</html>
